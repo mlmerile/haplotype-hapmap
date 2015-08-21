@@ -1,0 +1,1 @@
+# Package to create haplotypes given Hapmap data.
