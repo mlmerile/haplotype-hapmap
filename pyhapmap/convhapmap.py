@@ -63,9 +63,20 @@ def nucleo_to_01(df):
     def convert(series):
         series_most_frequent = series.value_counts().idxmax()
         series.loc[(series == series_most_frequent)] = 0
-        print((series != series_most_frequent))
-        series.loc[(series != series_most_frequent)] = 1
+        series.loc[(series != 0)] = 1
+        return series
 
-    df.apply(convert, axis=0)
+    df.apply(convert)
     df = df.astype(np.int8)
     return df
+
+def build_array(filenames, family_links_filenames, l_pop):
+
+    fam = filter_trio(create_df_family_links(family_links_filenames, l_pop))
+
+    df_haplotypes = nucleo_to_01(hapmap_to_df(filenames, fam))
+
+    mat_haplotypes = df_haplotypes.as_matrix()
+    mat_genotypes = mat_haplotypes[::2,:] + mat_haplotypes[1::2,:]
+
+    return (mat_genotypes, mat_haplotypes)
